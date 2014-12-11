@@ -1,4 +1,4 @@
-package com.github.bangroot.vertx.util
+package com.github.bangroot.vertx.extensions
 
 import org.vertx.groovy.core.Vertx
 import org.vertx.groovy.platform.Container

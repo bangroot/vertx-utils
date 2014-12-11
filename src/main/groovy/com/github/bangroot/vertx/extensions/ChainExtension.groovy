@@ -1,4 +1,4 @@
-package com.github.bangroot.vertx.util
+package com.github.bangroot.vertx.extensions
 
 /**
  * <p>Mixin to add chaining support for groovy/reactive applications. Inspired by work from Sascha Klein
