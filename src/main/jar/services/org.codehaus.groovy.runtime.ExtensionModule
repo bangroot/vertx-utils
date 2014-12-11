@@ -1,4 +1,4 @@
 moduleName=bangroot~vertx-util
 moduleVersion=1.0
-extensionClasses=bangroot.vertx.util.ChainExtension,bangroot.vertx.util.LoopExtension
+extensionClasses=com.github.bangroot.vertx.util.ChainExtension,com.github.bangroot.vertx.util.LoopExtension
 staticExtensionClasses=

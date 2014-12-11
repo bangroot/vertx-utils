@@ -1,4 +1,4 @@
-package bangroot.vertx.util
+package com.github.bangroot.vertx.util
 
 /**
  * <p>Groovy category to add loop semantics similar to {@link Object#each(Closure)} but with an additional closure which

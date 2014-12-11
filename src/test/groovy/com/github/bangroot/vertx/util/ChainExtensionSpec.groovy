@@ -1,4 +1,4 @@
-package bangroot.vertx.util
+package com.github.bangroot.vertx.util
 
 import spock.lang.Shared
 import spock.lang.Specification

@@ -67,7 +67,7 @@ artifacts {
 
 def globalVersion = new Version(currentVersion)
 
-group = 'bangroot.vertx'
+group = 'com.github.bangroot.vertx'
 version = globalVersion
 status = version.status
 
@@ -85,7 +85,7 @@ bintray {
   publish = false
   pkg {
     repo = 'maven'
-    name = 'vertx-util'
+    name = project.name
     desc = 'Utility Classes for Vert.x Development'
     websiteUrl = 'https://github.com/bangroot/vertx-utils'
     issueTrackerUrl = 'https://github.com/bangroot/vertx-utils/issues'
