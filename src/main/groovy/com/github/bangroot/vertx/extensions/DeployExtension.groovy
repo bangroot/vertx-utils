@@ -10,7 +10,7 @@ import org.vertx.groovy.platform.Verticle
 class DeployExtension {
 
   public static void launch(Verticle self, @DelegatesTo(Launcher) Closure closure) {
-    def launcher = new Launcher(self.vertx, self.container)
+    def launcher = new Launcher(self.getVertx(), self.getContainer())
     closure.delegate = launcher
     closure.resolveStrategy = Closure.DELEGATE_FIRST
     closure()
@@ -33,7 +33,7 @@ class DeployExtension {
           type     : 'module',
           name     : moduleName,
           config   : config,
-          instances: 1
+          instances: instances
       ]
     }
 
@@ -47,22 +47,20 @@ class DeployExtension {
     }
 
     def execute() {
-      use(LoopCategory) {
-        deployQueue.loop { target, next ->
-          switch (target.type) {
-            case 'module':
-              container.deployModule(target.name, target.config, target.instances) { result ->
-                if (result.failed) container.logger.fatal("Error loading module $target.name", result.cause())
-                if (next) next()
-              }
-              break;
-            case 'verticle':
-              container.deployVerticle(target.name, target.config, target.instances) { result ->
-                if (result.failed) container.logger.fatal("Error loading verticle $target.name", result.cause())
-                if (next) next()
-              }
-              break;
-          }
+      deployQueue.loop { target, next ->
+        switch (target.type) {
+          case 'module':
+            container.deployModule(target.name, target.config, target.instances) { result ->
+              if (result.failed) container.logger.fatal("Error loading module $target.name", result.cause())
+              next()
+            }
+            break;
+          case 'verticle':
+            container.deployVerticle(target.name, target.config, target.instances) { result ->
+              if (result.failed) container.logger.fatal("Error loading verticle $target.name", result.cause())
+              next()
+            }
+            break;
         }
       }
     }
