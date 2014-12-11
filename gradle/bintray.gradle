@@ -3,9 +3,7 @@ import java.text.SimpleDateFormat
 apply plugin: 'com.jfrog.bintray'
 
 def globalVersion = new Version(currentVersion)
-
-version = globalVersion
-status = version.status
+project.version = currentVersion
 
 bintray {
   apiUrl = "https://api.bintray.com"
