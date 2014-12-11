@@ -6,6 +6,7 @@ buildscript {
   }
   dependencies {
     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
+    classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
   }
 }
 
@@ -14,7 +15,9 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: "jacoco"
 apply plugin: "maven"
+apply plugin: "maven-publish"
 apply plugin: 'com.jfrog.bintray'
+apply plugin: "com.jfrog.artifactory"
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -30,13 +33,15 @@ configurations {
   compile.extendsFrom provided
 }
 
-conf2ScopeMappings.addMapping(1, configurations.provided, Conf2ScopeMappingContainer.PROVIDED)
+conf2ScopeMappings.addMapping(0, configurations.provided, Conf2ScopeMappingContainer.PROVIDED)
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
   // We use the latest groovy 2.x version for building this library
   provided 'org.codehaus.groovy:groovy:2.1.5'
-
+  provided "io.vertx:vertx-core:2.1.2"
+  provided "io.vertx:vertx-platform:2.1.2"
+  provided "io.vertx:lang-groovy:2.1.0-final@jar"
   // We use the awesome Spock testing and specification framework
   testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
   testCompile 'junit:junit:4.11'
@@ -59,6 +64,15 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
   from javadoc.destinationDir
 }
 
+publishing {
+  publications {
+    published(MavenPublication) {
+      from components.java
+      artifact sourceJar
+      artifact javadocJar
+    }
+  }
+}
 // Add the sourceJars to non-extractor modules
 artifacts {
   published sourceJar
@@ -76,7 +90,7 @@ bintray {
   user = bintray_user
   key = bintray_key
   configurations = ['published', 'archives']
-  //publications = ['published']
+//  publications = ['published']
 //  filesSpec {
 //    from 'files'
 //    into 'standalone_files/level1'
@@ -101,6 +115,21 @@ bintray {
 //      attributes= ['a': ['ay1', 'ay2', 'ay3'], 'b': ['bee'], c: 'cee']
     }
   }
+}
+
+artifactory {
+  contextUrl = "https://oss.jfrog.org"
+  publish {
+    repository {
+      repoKey = 'oss-snapshot-local'
+      username = bintray_user
+      password = bintray_key
+    }
+  }
+}
+
+artifactoryPublish {
+  publications('published')
 }
 
 class Version {
@@ -138,5 +167,7 @@ task wrapper(type: Wrapper) {
 }
 
 task mappings << {
-  println conf2ScopeMappings.mappings
+  conf2ScopeMappings.mappings.each { key, value ->
+    println "$key: $value.scope"
+  }
 }
