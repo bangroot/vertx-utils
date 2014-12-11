@@ -33,7 +33,7 @@ bintray {
     version {
       name = globalVersion.thisVersion //Optional logical version name
 //      desc = 'optional, version-specific description'
-      vcsTag = '1.0'
+//      vcsTag = '1.0'
 //      attributes= ['a': ['ay1', 'ay2', 'ay3'], 'b': ['bee'], c: 'cee']
     }
   }
