@@ -21,7 +21,6 @@ abstract class ExtensionVerticle extends Verticle {
      */
     ExpandoMetaClass.enableGlobally()
     MetaClassRegistryImpl mcri = (MetaClassRegistryImpl) MetaClassRegistryImpl.getInstance(MetaClassRegistryImpl.LOAD_DEFAULT)
-    println "Loading module extensions!"
 
     try {
       Enumeration<URL> resources = ExtensionVerticle.classLoader.getResources(ExtensionModuleScanner.MODULE_META_INF_FILE);
