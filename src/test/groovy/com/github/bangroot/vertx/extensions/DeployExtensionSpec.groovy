@@ -85,6 +85,81 @@ class DeployExtensionSpec extends Specification {
     }
   }
 
+  def "Test Basic Worker Deploy"() {
+    given:
+    def mockVertx = Mock(Vertx)
+    def mockContainer = Mock(Container)
+    def mockVerticle = Mock(Verticle)
+    mockVerticle.getVertx() >> mockVertx
+    mockVerticle.getContainer() >> mockContainer
+
+    when:
+    use(DeployExtension) {
+      mockVerticle.launch {
+        worker("TestVerticle")
+      }
+    }
+
+    then:
+    1 * mockContainer.deployWorkerVerticle("TestVerticle", [:], 1, false, _ as Closure) >> { name, config, instances, multithreaded, closure ->
+      closure([failed: false])
+    }
+  }
+
+  def "Test Multiple Worker Deploy"() {
+    given:
+    def mockVertx = Mock(Vertx)
+    def mockContainer = Mock(Container)
+    def mockVerticle = Mock(Verticle)
+    mockVerticle.getVertx() >> mockVertx
+    mockVerticle.getContainer() >> mockContainer
+
+    when:
+    use(DeployExtension) {
+      mockVerticle.launch {
+        worker("TestVerticle")
+        worker("TestVerticle2")
+      }
+    }
+
+    then:
+    1 * mockContainer.deployWorkerVerticle("TestVerticle", [:], 1, false, _ as Closure) >> { name, config, instances, multithreaded, closure ->
+      closure([failed: false])
+    }
+    1 * mockContainer.deployWorkerVerticle("TestVerticle2", [:], 1, false, _ as Closure) >> { name, config, instances, multithreaded, closure ->
+      closure([failed: false])
+    }
+  }
+
+  def "Test Worker Deploy with Config"() {
+    given:
+    def mockVertx = Mock(Vertx)
+    def mockContainer = Mock(Container)
+    def mockVerticle = Mock(Verticle)
+    mockVerticle.getVertx() >> mockVertx
+    mockVerticle.getContainer() >> mockContainer
+
+    when:
+    use(DeployExtension) {
+      mockVerticle.launch {
+        worker("TestVerticle", [:], 2)
+        worker("TestVerticle2", [config: true])
+        worker("TestVerticle3", [config: true], 2)
+      }
+    }
+
+    then:
+    1 * mockContainer.deployWorkerVerticle("TestVerticle", [:], 2, false, _ as Closure) >> { name, config, instances, multithreaded, closure ->
+      closure([failed: false])
+    }
+    1 * mockContainer.deployWorkerVerticle("TestVerticle2", [config: true], 1, false, _ as Closure) >> { name, config, instances, multithreaded, closure ->
+      closure([failed: false])
+    }
+    1 * mockContainer.deployWorkerVerticle("TestVerticle3", [config: true], 2, false, _ as Closure) >> { name, config, instances, multithreaded, closure ->
+      closure([failed: false])
+    }
+  }
+
   def "Test Basic Module Deploy"() {
     given:
     def mockVertx = Mock(Vertx)
