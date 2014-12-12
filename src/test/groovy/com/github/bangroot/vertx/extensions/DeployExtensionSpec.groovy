@@ -6,7 +6,7 @@ import org.vertx.groovy.platform.Verticle
 import spock.lang.Specification
 
 /**
- * Created by e026391 on 12/11/14.
+ * Created by bangroot on 12/11/14.
  */
 class DeployExtensionSpec extends Specification {
 
