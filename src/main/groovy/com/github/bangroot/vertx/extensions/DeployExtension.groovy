@@ -43,6 +43,16 @@ class DeployExtension {
       ]
     }
 
+    def worker(String verticleName, Map<String, Object> config = [:], int instances = 1, boolean multithreaded = false) {
+      deployQueue << [
+          type         : 'worker',
+          name         : verticleName,
+          config       : config,
+          instances    : instances,
+          multithreaded: multithreaded
+      ]
+    }
+
     def execute() {
       use(LoopExtension) {
         deployQueue.loop { target, next ->
@@ -56,6 +66,12 @@ class DeployExtension {
             case 'verticle':
               container.deployVerticle(target.name, target.config, target.instances) { result ->
                 if (result.failed) container.logger.fatal("Error loading verticle $target.name", result.cause())
+                next()
+              }
+              break;
+            case 'worker':
+              container.deployWorkerVerticle(target.name, target.config, target.instances, target.multithreaded) { result ->
+                if (result.failed) container.logger.fatal("Error loading worker verticle $target.name", result.cause())
                 next()
               }
               break;

@@ -6,7 +6,7 @@ import org.vertx.groovy.platform.Verticle
 import spock.lang.Specification
 
 /**
- * Created by e026391 on 12/11/14.
+ * Created by bangroot on 12/11/14.
  */
 class DeployExtensionSpec extends Specification {
 
@@ -81,6 +81,81 @@ class DeployExtensionSpec extends Specification {
       closure([failed: false])
     }
     1 * mockContainer.deployVerticle("TestVerticle3", [config: true], 2, _ as Closure) >> { name, config, instances, closure ->
+      closure([failed: false])
+    }
+  }
+
+  def "Test Basic Worker Deploy"() {
+    given:
+    def mockVertx = Mock(Vertx)
+    def mockContainer = Mock(Container)
+    def mockVerticle = Mock(Verticle)
+    mockVerticle.getVertx() >> mockVertx
+    mockVerticle.getContainer() >> mockContainer
+
+    when:
+    use(DeployExtension) {
+      mockVerticle.launch {
+        worker("TestVerticle")
+      }
+    }
+
+    then:
+    1 * mockContainer.deployWorkerVerticle("TestVerticle", [:], 1, false, _ as Closure) >> { name, config, instances, multithreaded, closure ->
+      closure([failed: false])
+    }
+  }
+
+  def "Test Multiple Worker Deploy"() {
+    given:
+    def mockVertx = Mock(Vertx)
+    def mockContainer = Mock(Container)
+    def mockVerticle = Mock(Verticle)
+    mockVerticle.getVertx() >> mockVertx
+    mockVerticle.getContainer() >> mockContainer
+
+    when:
+    use(DeployExtension) {
+      mockVerticle.launch {
+        worker("TestVerticle")
+        worker("TestVerticle2")
+      }
+    }
+
+    then:
+    1 * mockContainer.deployWorkerVerticle("TestVerticle", [:], 1, false, _ as Closure) >> { name, config, instances, multithreaded, closure ->
+      closure([failed: false])
+    }
+    1 * mockContainer.deployWorkerVerticle("TestVerticle2", [:], 1, false, _ as Closure) >> { name, config, instances, multithreaded, closure ->
+      closure([failed: false])
+    }
+  }
+
+  def "Test Worker Deploy with Config"() {
+    given:
+    def mockVertx = Mock(Vertx)
+    def mockContainer = Mock(Container)
+    def mockVerticle = Mock(Verticle)
+    mockVerticle.getVertx() >> mockVertx
+    mockVerticle.getContainer() >> mockContainer
+
+    when:
+    use(DeployExtension) {
+      mockVerticle.launch {
+        worker("TestVerticle", [:], 2)
+        worker("TestVerticle2", [config: true])
+        worker("TestVerticle3", [config: true], 2)
+      }
+    }
+
+    then:
+    1 * mockContainer.deployWorkerVerticle("TestVerticle", [:], 2, false, _ as Closure) >> { name, config, instances, multithreaded, closure ->
+      closure([failed: false])
+    }
+    1 * mockContainer.deployWorkerVerticle("TestVerticle2", [config: true], 1, false, _ as Closure) >> { name, config, instances, multithreaded, closure ->
+      closure([failed: false])
+    }
+    1 * mockContainer.deployWorkerVerticle("TestVerticle3", [config: true], 2, false, _ as Closure) >> { name, config, instances, multithreaded, closure ->
       closure([failed: false])
     }
   }
