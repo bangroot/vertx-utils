@@ -1,5 +1,4 @@
 package com.github.bangroot.vertx.extensions
-
 /**
  * <p>Groovy category to add loop semantics similar to {@link Object#each(Closure)} but with an additional closure which
  * executes after the looping is complete. This construct is handy in reactive programming models, especially when
