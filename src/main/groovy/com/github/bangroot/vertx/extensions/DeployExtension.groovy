@@ -4,9 +4,6 @@ import org.vertx.groovy.core.Vertx
 import org.vertx.groovy.platform.Container
 import org.vertx.groovy.platform.Verticle
 
-/**
- * Created by e026391 on 10/31/14.
- */
 class DeployExtension {
 
   public static void launch(Verticle self, @DelegatesTo(Launcher) Closure closure) {
@@ -17,7 +14,7 @@ class DeployExtension {
     launcher.execute()
   }
 
-  private static class Launcher {
+  static class Launcher {
     Vertx vertx
     Container container
 
@@ -47,20 +44,22 @@ class DeployExtension {
     }
 
     def execute() {
-      deployQueue.loop { target, next ->
-        switch (target.type) {
-          case 'module':
-            container.deployModule(target.name, target.config, target.instances) { result ->
-              if (result.failed) container.logger.fatal("Error loading module $target.name", result.cause())
-              next()
-            }
-            break;
-          case 'verticle':
-            container.deployVerticle(target.name, target.config, target.instances) { result ->
-              if (result.failed) container.logger.fatal("Error loading verticle $target.name", result.cause())
-              next()
-            }
-            break;
+      use(LoopExtension) {
+        deployQueue.loop { target, next ->
+          switch (target.type) {
+            case 'module':
+              container.deployModule(target.name, target.config, target.instances) { result ->
+                if (result.failed) container.logger.fatal("Error loading module $target.name", result.cause())
+                next()
+              }
+              break;
+            case 'verticle':
+              container.deployVerticle(target.name, target.config, target.instances) { result ->
+                if (result.failed) container.logger.fatal("Error loading verticle $target.name", result.cause())
+                next()
+              }
+              break;
+          }
         }
       }
     }
