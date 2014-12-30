@@ -1,13 +1,15 @@
 package com.github.bangroot.vertx.extensions
 
-import org.vertx.groovy.core.Vertx
-import org.vertx.groovy.platform.Container
-import org.vertx.groovy.platform.Verticle
+import io.vertx.core.AsyncResult
+import io.vertx.core.logging.impl.LoggerFactory
+import io.vertx.groovy.core.Vertx
+import io.vertx.lang.groovy.GroovyVerticle
+
 
 class DeployExtension {
 
-  public static void launch(Verticle self, @DelegatesTo(Launcher) Closure closure) {
-    def launcher = new Launcher(self.getVertx(), self.getContainer())
+  public static void launch(GroovyVerticle self, @DelegatesTo(Launcher) Closure closure) {
+    def launcher = new Launcher(self.vertx)
     closure.delegate = launcher
     closure.resolveStrategy = Closure.DELEGATE_FIRST
     closure()
@@ -16,65 +18,39 @@ class DeployExtension {
 
   static class Launcher {
     Vertx vertx
-    Container container
-
     List deployQueue = []
 
-    public Launcher(Vertx vertx, Container container) {
+    public Launcher(Vertx vertx) {
       this.vertx = vertx
-      this.container = container
     }
 
-    def module(String moduleName, Map<String, Object> config = [:], int instances = 1) {
-      deployQueue << [
-          type     : 'module',
-          name     : moduleName,
-          config   : config,
-          instances: instances
-      ]
-    }
-
-    def verticle(String verticleName, Map<String, Object> config = [:], int instances = 1) {
+    def verticle(String verticleName, Map<String, Object> config = [:], Map<String, Object> options = [instances: 1]) {
       deployQueue << [
           type     : 'verticle',
           name     : verticleName,
           config   : config,
-          instances: instances
+          options: options
       ]
     }
 
-    def worker(String verticleName, Map<String, Object> config = [:], int instances = 1, boolean multithreaded = false) {
+    def worker(String verticleName, Map<String, Object> config = [:], Map<String, Object> options = [instances: 1, worker: true]) {
+      options.worker = true
       deployQueue << [
           type         : 'worker',
           name         : verticleName,
           config       : config,
-          instances    : instances,
-          multithreaded: multithreaded
+          options: options
       ]
     }
 
     def execute() {
       use(LoopExtension) {
         deployQueue.loop { target, next ->
-          switch (target.type) {
-            case 'module':
-              container.deployModule(target.name, target.config, target.instances) { result ->
-                if (result.failed) container.logger.fatal("Error loading module $target.name", result.cause())
-                next()
-              }
-              break;
-            case 'verticle':
-              container.deployVerticle(target.name, target.config, target.instances) { result ->
-                if (result.failed) container.logger.fatal("Error loading verticle $target.name", result.cause())
-                next()
-              }
-              break;
-            case 'worker':
-              container.deployWorkerVerticle(target.name, target.config, target.instances, target.multithreaded) { result ->
-                if (result.failed) container.logger.fatal("Error loading worker verticle $target.name", result.cause())
-                next()
-              }
-              break;
+          def options = target.options
+          options.config = target.config
+          vertx.deployVerticle(target.name, options) { result ->
+            if (result.failed()) LoggerFactory.getLogger(DeployExtension).fatal("Error loading verticle $target.name", result.cause())
+            next()
           }
         }
       }

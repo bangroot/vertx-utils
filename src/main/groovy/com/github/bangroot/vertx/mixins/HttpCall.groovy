@@ -3,16 +3,16 @@ package com.github.bangroot.vertx.mixins
 import groovy.json.JsonException
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import org.apache.log4j.Logger
-import org.vertx.groovy.core.Vertx
-import org.vertx.groovy.core.buffer.Buffer
-import org.vertx.groovy.core.http.HttpClient
+import io.vertx.core.logging.impl.LoggerFactory
+import io.vertx.groovy.core.Vertx
+import io.vertx.groovy.core.http.HttpClient
+import io.vertx.groovy.core.buffer.Buffer
 
 /**
  * Creator: bangroot
  */
 class HttpCall {
-  def static log = Logger.getLogger(HttpCall)
+  def static log = LoggerFactory.getLogger(HttpCall)
 
   static Map<String, HttpClient> clients = [:]
   static Map<HttpClient, Map<String, String>> sessions = [:]

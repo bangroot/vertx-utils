@@ -1,6 +1,6 @@
 package com.github.bangroot.vertx.extensions
 
-import org.vertx.groovy.core.eventbus.Message
+import io.vertx.groovy.core.eventbus.Message
 
 /**
  * Created by bangroot on 9/10/14.

@@ -3,11 +3,11 @@ package com.github.bangroot.vertx.groovy
 import org.codehaus.groovy.reflection.CachedClass
 import org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner
 import org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl
-import org.vertx.groovy.platform.Verticle
+import io.vertx.lang.groovy.GroovyVerticle
 
 import static org.codehaus.groovy.runtime.DefaultGroovyMethodsSupport.closeQuietly
 
-abstract class ExtensionVerticle extends Verticle {
+abstract class ExtensionVerticle extends GroovyVerticle {
 
   static {
     /*
