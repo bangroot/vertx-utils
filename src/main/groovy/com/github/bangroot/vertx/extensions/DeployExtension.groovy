@@ -1,14 +1,12 @@
 package com.github.bangroot.vertx.extensions
 
-import io.vertx.core.AsyncResult
 import io.vertx.core.logging.impl.LoggerFactory
 import io.vertx.groovy.core.Vertx
 import io.vertx.lang.groovy.GroovyVerticle
 
-
 class DeployExtension {
 
-  public static void launch(GroovyVerticle self, @DelegatesTo(Launcher) Closure closure) {
+  public static void deploy(GroovyVerticle self, @DelegatesTo(Launcher) Closure closure) {
     def launcher = new Launcher(self.vertx)
     closure.delegate = launcher
     closure.resolveStrategy = Closure.DELEGATE_FIRST

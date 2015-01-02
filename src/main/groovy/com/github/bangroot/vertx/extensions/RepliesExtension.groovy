@@ -7,17 +7,17 @@ import io.vertx.groovy.core.eventbus.Message
  */
 class RepliesExtension {
 
-  public static void sendOkay(Message self, body = null) {
+  public static void replyOkay(Message self, body = null) {
     def bodyToSend = (body) ?: [:]
     bodyToSend['status'] = 'ok'
     self.reply(bodyToSend)
   }
 
-  public static void sendDenied(Message self) {
+  public static void replyDenied(Message self) {
     self.reply([status: 'denied'])
   }
 
-  public static void sendError(Message self, errorMsg = null) {
+  public static void replyError(Message self, errorMsg = null) {
     def bodyToSend = [status: 'error', message: errorMsg]
     self.reply(bodyToSend)
   }

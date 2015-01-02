@@ -12,19 +12,19 @@ package com.github.bangroot.vertx.extensions
  * {@code next ( )} to move processing forward in the loop:</p>
  *
  * <pre>
- *  use(LoopCategory) {*    [1,2,3].loop {element, next -> println element; next();}*}* </pre>
+ *    [1,2,3].loop {element, next -> println element; next();}* </pre>
  *
  * <p>While this may look like additional overhead, it simplifies logic when the looping closure has complex branching or
  * involves a chain. The second key difference is the addition of an optional final closure to be invoked after the last
  * element has been processed.</p>
  *
  * <pre>
- *   use(LoopCategory) {*     [1,2,3].loop {element, next -> println element; next();}{println "done!"}*}* </pre>
+ *    [1,2,3].loop {element, next -> println element; next();}{println "done!"}* </pre>
  *
  * <p>Looping also works with maps, but key and value are separated for you:</p>
  *
  * <pre>
- *  use(LoopCategory) {*    [a:1,b:2,c:3].loop {key, value, next -> println "${key} = ${value}"; next();}*}* </pre>
+ *    [a:1,b:2,c:3].loop {key, value, next -> println "${key} = ${value}"; next();}* </pre>
  */
 class LoopExtension {
   /**

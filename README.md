@@ -87,3 +87,83 @@ class MyVerticle extends GroovyVerticle {
   }
 }
 ```    
+
+**Loop**
+
+_Inspired by work from Sascha Klein ([slides](http://www.slideshare.net/sascha_klein/vertx-using-groovy),
+ [youtube](https://www.youtube.com/watch?v=dsRYKgNz55o&list=FLZcybLPmV_qCz2XObpUPjMg))_
+ 
+The loop extension is applied to almost anything iterable and provides a way of looping over arrays but being in greater
+control of when the next item is executed. Why do you need this instead of `.each`? Well, `.each` will move forward
+in the iterator once control is returned to the thread. So, if in the processing of the item you call another service
+the iterator will start executing the next item. But, if you need strict control, for either performance or logical
+reasons, then loop is for you.
+
+`loop` works much like each except that your closure gets a `next` parameter (a Closure) to call when you are ready 
+to proceed.
+
+```groovy
+[1,2,3].loop {element, next -> println element; next();}
+```
+
+You can also pass an optional Closure to be called after processing is complete.
+
+```groovy
+[1,2,3].loop {element, next -> println element; next();}{println "done!"}
+```
+
+For Maps, the key and value are broken out
+
+```groovy
+[a:1,b:2,c:3].loop {key, value, next -> println "${key} = ${value}"; next();}
+```
+
+**Deploy**
+
+Deploy creates a small groovy DSL for deploying verticles. I prefer the simple, concise notation.
+
+The only thing required to deploy a verticle is the identifier
+
+```groovy
+deploy {
+  verticle "groovy:org.example.MyVerticle"
+  //or worker
+  worker "groovy:org.example.MyWorker"
+}
+```
+
+You can also pass the configuration to be passed into the Verticle on start
+
+```groovy
+deploy {
+  verticle "groovy:org.example.MyVerticle", [port: 8080]
+}
+```
+
+As well as other DeploymentOptions
+
+```groovy
+deploy {
+  verticle "groovy:org.example.MyVerticle", [:], [instances: 3]
+}
+```
+
+**Replies**
+
+There seem to be a few standards growing out of the Vert.x community around message patterns. I've attempted
+to codify them into helper functions added to Message objects.
+
+`replyOkay` will send a reply to the message with `[status: 'ok']` as the body in addition to any other body elements
+you pass in.
+
+```groovy
+  m.replyOkay()
+  
+  \\or
+  
+  m.replyOkay([some_return_value: foo])
+```
+
+`replyDenied` will reply with a `[status: 'denied']`
+
+`replyError` will reply with a `[status: 'error']` plus any optional `message` supplied
