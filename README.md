@@ -6,6 +6,15 @@ projects. The extensions are self-registering via the [Groovy extension module](
 mechanism. Mixins are optional functionality that can be mixed into Verticles using the [@Mixin annotation or 
 use()](http://groovy.codehaus.org/Category+and+Mixin+transformations) methods.
 
+Table of Contents
+-----------
+Extensions | Mixins
+-------- | -------
+[#Chain]  | [#HttpMixin]
+[#Loop]   |
+[#Deploy] |
+[#Replies] |
+
 Extensions
 -----------
 
