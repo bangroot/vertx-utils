@@ -10,10 +10,10 @@ Table of Contents
 -----------
 Extensions | Mixins
 -------- | -------
-[#Chain]  | [#HttpMixin]
-[#Loop]   |
-[#Deploy] |
-[#Replies] |
+[Chain](#chain)  | [HttpMixin](#httpmixin)
+[Loop](#loop)   |
+[Deploy](#deploy) |
+[Replies](#replies) |
 
 Extensions
 -----------
