@@ -5,8 +5,8 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import io.vertx.core.logging.impl.LoggerFactory
 import io.vertx.groovy.core.Vertx
-import io.vertx.groovy.core.http.HttpClient
 import io.vertx.groovy.core.buffer.Buffer
+import io.vertx.groovy.core.http.HttpClient
 
 /**
  * Creator: bangroot
@@ -100,6 +100,18 @@ class HttpCall {
 
   def PUT() {
     request('PUT')
+  }
+
+  def DELETE() {
+    request('DELETE')
+  }
+
+  def OPTIONS() {
+    request('OPTIONS')
+  }
+
+  def HEAD() {
+    request('HEAD')
   }
 
   def request(String method) {

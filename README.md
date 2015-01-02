@@ -9,7 +9,7 @@ use()](http://groovy.codehaus.org/Category+and+Mixin+transformations) methods.
 Extensions
 -----------
 
-**Chain**
+###Chain
 
 _Inspired by work from Sascha Klein ([slides](http://www.slideshare.net/sascha_klein/vertx-using-groovy),
  [youtube](https://www.youtube.com/watch?v=dsRYKgNz55o&list=FLZcybLPmV_qCz2XObpUPjMg))_
@@ -88,7 +88,7 @@ class MyVerticle extends GroovyVerticle {
 }
 ```    
 
-**Loop**
+###Loop
 
 _Inspired by work from Sascha Klein ([slides](http://www.slideshare.net/sascha_klein/vertx-using-groovy),
  [youtube](https://www.youtube.com/watch?v=dsRYKgNz55o&list=FLZcybLPmV_qCz2XObpUPjMg))_
@@ -118,7 +118,7 @@ For Maps, the key and value are broken out
 [a:1,b:2,c:3].loop {key, value, next -> println "${key} = ${value}"; next();}
 ```
 
-**Deploy**
+###Deploy
 
 Deploy creates a small groovy DSL for deploying verticles. I prefer the simple, concise notation.
 
@@ -148,7 +148,7 @@ deploy {
 }
 ```
 
-**Replies**
+###Replies
 
 There seem to be a few standards growing out of the Vert.x community around message patterns. I've attempted
 to codify them into helper functions added to Message objects.
@@ -167,3 +167,90 @@ you pass in.
 `replyDenied` will reply with a `[status: 'denied']`
 
 `replyError` will reply with a `[status: 'error']` plus any optional `message` supplied
+
+Mixins
+---------
+
+###HttpMixin
+
+Should you require HttpClient support in your GroovyVerticle the HttpMixin provides a DSL for constructing more
+complex calls. In addtion, it caches client instances and will even handle some session management when you
+are interacting with a web site that uses session cookies.
+
+To enable this support, simplify mix it into your Verticle
+
+```groovy
+@Mixin([HttpMixin])
+class MyVerticle extends GroovyVerticle {
+}
+```
+
+The syntax for the http dsl is `http url, closure` and the most basic example looks like
+
+```groovy
+http 'http://www.google.com', {
+  GET()
+}
+```
+
+This will perform an `HTTP GET` to www.google.com with no handler for a body or response ... not much help. 
+
+####Responses
+You can do a simple response handler
+
+```groovy
+http 'http://www.google.com', {
+  responseHandler {response ->
+  }
+  GET()
+}
+```
+
+Body handlers can come in several ways:
+
+As a string
+```groovy
+http 'http://www.google.com', {
+  withBody { body ->
+    //body is a string
+  }
+  
+  GET()
+}
+```
+
+As a map (from JSON)
+```groovy
+http 'http://www.google.com', {
+  withJsonBody { json ->
+  }
+  
+  GET()
+}
+```
+
+####HTTP Headers
+
+Any unmatched method call in the closure is treated as an HTTP Header
+
+```groovy
+http 'http://www.google.com', {
+  Content-Type 'application/json'
+  GET()
+}
+```
+
+####HTTP Methods
+
+In addition to `GET()`, `POST()`, `PUT()`, `DELETE()`, `OPTIONS()` and `HEAD()` are supported.
+ 
+####Request Body
+Currently, only JSON bodies are supported. Provide a map as the body and the Http mixin will include it in the
+request.
+
+```groovy
+http 'http://www.google.com', {
+  body [foo:bar]
+  POST()
+}
+```
