@@ -16,6 +16,7 @@ apply plugin: 'groovy'
 apply plugin: "jacoco"
 apply plugin: "maven"
 apply plugin: "maven-publish"
+apply plugin: "eclipse"
 apply from: 'gradle/wrapper.gradle'
 
 // In this section you declare where to find the dependencies of your project
@@ -69,6 +70,9 @@ task sourceJar(type: Jar) {
 task javadocJar(type: Jar, dependsOn: javadoc) {
   classifier = 'javadoc'
   from javadoc.destinationDir
+}
+
+test {
 }
 
 publishing {

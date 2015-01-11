@@ -20,7 +20,7 @@ class DeployExtensionSpec extends Specification {
 
     when:
     use(DeployExtension) {
-      mockVerticle.launch {
+      mockVerticle.deploy {
         verticle("TestVerticle")
       }
     }
@@ -39,7 +39,7 @@ class DeployExtensionSpec extends Specification {
 
     when:
     use(DeployExtension) {
-      mockVerticle.launch {
+      mockVerticle.deploy {
         verticle("TestVerticle")
         verticle("TestVerticle2")
       }
@@ -62,7 +62,7 @@ class DeployExtensionSpec extends Specification {
 
     when:
     use(DeployExtension) {
-      mockVerticle.launch {
+      mockVerticle.deploy {
         verticle("TestVerticle", [:], [instances:2])
         verticle("TestVerticle2", [config: true])
         verticle("TestVerticle3", [config: true], [instances:2])
@@ -89,7 +89,7 @@ class DeployExtensionSpec extends Specification {
 
     when:
     use(DeployExtension) {
-      mockVerticle.launch {
+      mockVerticle.deploy {
         worker("TestVerticle")
       }
     }
@@ -108,7 +108,7 @@ class DeployExtensionSpec extends Specification {
 
     when:
     use(DeployExtension) {
-      mockVerticle.launch {
+      mockVerticle.deploy {
         worker("TestVerticle")
         worker("TestVerticle2")
       }
@@ -131,7 +131,7 @@ class DeployExtensionSpec extends Specification {
 
     when:
     use(DeployExtension) {
-      mockVerticle.launch {
+      mockVerticle.deploy {
         worker("TestVerticle", [:], [instances: 2])
         worker("TestVerticle2", [config: true])
         worker("TestVerticle3", [config: true], [instances: 2])
@@ -158,7 +158,7 @@ class DeployExtensionSpec extends Specification {
 
     when:
     use(DeployExtension) {
-      mockVerticle.launch {
+      mockVerticle.deploy {
         verticle("TestVerticle", [config: true], [instances: 2])
         worker("TestVerticle2", [config: true], [instances: 2])
       }

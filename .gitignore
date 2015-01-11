@@ -23,3 +23,6 @@ mods
 .jruby
 .sass-cache
 vertx_classpath.txt
+/.nb-gradle/private/
+Session.vim
+*.swp

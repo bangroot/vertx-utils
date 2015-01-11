@@ -177,10 +177,10 @@ you pass in.
 
 `replyError` will reply with a `[status: 'error']` plus any optional `message` supplied
 
-Mixins
+Traits
 ---------
 
-###HttpMixin
+###HttpClientSupport
 
 Should you require HttpClient support in your GroovyVerticle the HttpMixin provides a DSL for constructing more
 complex calls. In addtion, it caches client instances and will even handle some session management when you

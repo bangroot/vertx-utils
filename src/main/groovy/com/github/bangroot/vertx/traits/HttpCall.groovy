@@ -1,8 +1,9 @@
-package com.github.bangroot.vertx.mixins
+package com.github.bangroot.vertx.traits
 
 import groovy.json.JsonException
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import io.vertx.core.http.HttpMethod
 import io.vertx.core.logging.impl.LoggerFactory
 import io.vertx.groovy.core.Vertx
 import io.vertx.groovy.core.buffer.Buffer
@@ -42,7 +43,8 @@ class HttpCall {
       HttpClient client = vertx.createHttpClient([host: destination.host, port: port, maxPoolSize: 1, keepAlive: false])
       if (destination.protocol == "https") client.setSSL(true)
       clients.put(clientKey, client)
-      return new HttpCall(client, destination.file)
+      def path = (destination.file) ?: ''
+      return new HttpCall(client, path)
     }
   }
 
@@ -91,30 +93,30 @@ class HttpCall {
   }
 
   def GET() {
-    request('GET')
+    request(HttpMethod.GET)
   }
 
   def POST() {
-    request('POST')
+    request(HttpMethod.POST)
   }
 
   def PUT() {
-    request('PUT')
+    request(HttpMethod.PUT)
   }
 
   def DELETE() {
-    request('DELETE')
+    request(HttpMethod.DELETE)
   }
 
   def OPTIONS() {
-    request('OPTIONS')
+    request(HttpMethod.OPTIONS)
   }
 
   def HEAD() {
-    request('HEAD')
+    request(HttpMethod.HEAD)
   }
 
-  def request(String method) {
+  def request(HttpMethod method) {
     log.debug("Requesting to ${path}")
     def request = client.request(method, path) { response ->
       if (sessionCookie && response.statusCode == 401) {
