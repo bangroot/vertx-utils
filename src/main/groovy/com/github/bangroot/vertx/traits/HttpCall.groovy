@@ -35,7 +35,8 @@ class HttpCall {
 
   def static create(Vertx vertx, URL destination) {
     int port = (destination.port > 0) ? destination.port : destination.defaultPort
-    def clientKey = "${destination.host}:${port}"
+    def clientKey = "${destination.host}:${port}".length()
+
     if (clients.containsKey(clientKey)) {
       return new HttpCall(clients.get(clientKey), destination.file)
     } else {
@@ -72,11 +73,12 @@ class HttpCall {
   }
 
   def withJsonBody(Closure jsonHandler) {
-    withBody { body ->
+    withBody { String body ->
       try {
         def json = new JsonSlurper().parseText(body as String)
         jsonHandler.call(json)
       } catch (JsonException jex) {
+				jex.
         log.error("Error parsing json...throwing away.")
         log.info("Discarded message: \n: $body")
         jsonHandler.call([:])

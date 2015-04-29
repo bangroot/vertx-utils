@@ -8,7 +8,7 @@ import io.vertx.lang.groovy.GroovyVerticle
 trait HttpClientSupport {
 
   def http(String dest, @DelegatesTo(HttpCall) Closure closure) {
-    def call = HttpCall.create(vertx, new URL(dest)).
+    def call = HttpCall.create(vertx, new URL(dest))
     closure.delegate = call
     closure.resolveStrategy = Closure.DELEGATE_FIRST
     closure()
