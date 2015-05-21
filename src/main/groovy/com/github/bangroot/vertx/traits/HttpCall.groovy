@@ -1,18 +1,19 @@
-package com.github.bangroot.vertx.mixins
+package com.github.bangroot.vertx.traits
 
 import groovy.json.JsonException
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import org.apache.log4j.Logger
-import org.vertx.groovy.core.Vertx
-import org.vertx.groovy.core.buffer.Buffer
-import org.vertx.groovy.core.http.HttpClient
+import io.vertx.core.http.HttpMethod
+import io.vertx.core.logging.impl.LoggerFactory
+import io.vertx.groovy.core.Vertx
+import io.vertx.groovy.core.buffer.Buffer
+import io.vertx.groovy.core.http.HttpClient
 
 /**
  * Creator: bangroot
  */
 class HttpCall {
-  def static log = Logger.getLogger(HttpCall)
+  def static log = LoggerFactory.getLogger(HttpCall)
 
   static Map<String, HttpClient> clients = [:]
   static Map<HttpClient, Map<String, String>> sessions = [:]
@@ -34,7 +35,8 @@ class HttpCall {
 
   def static create(Vertx vertx, URL destination) {
     int port = (destination.port > 0) ? destination.port : destination.defaultPort
-    def clientKey = "${destination.host}:${port}"
+    def clientKey = "${destination.host}:${port}".length()
+
     if (clients.containsKey(clientKey)) {
       return new HttpCall(clients.get(clientKey), destination.file)
     } else {
@@ -42,7 +44,8 @@ class HttpCall {
       HttpClient client = vertx.createHttpClient([host: destination.host, port: port, maxPoolSize: 1, keepAlive: false])
       if (destination.protocol == "https") client.setSSL(true)
       clients.put(clientKey, client)
-      return new HttpCall(client, destination.file)
+      def path = (destination.file) ?: ''
+      return new HttpCall(client, path)
     }
   }
 
@@ -70,11 +73,12 @@ class HttpCall {
   }
 
   def withJsonBody(Closure jsonHandler) {
-    withBody { body ->
+    withBody { String body ->
       try {
         def json = new JsonSlurper().parseText(body as String)
         jsonHandler.call(json)
       } catch (JsonException jex) {
+				jex.
         log.error("Error parsing json...throwing away.")
         log.info("Discarded message: \n: $body")
         jsonHandler.call([:])
@@ -91,18 +95,30 @@ class HttpCall {
   }
 
   def GET() {
-    request('GET')
+    request(HttpMethod.GET)
   }
 
   def POST() {
-    request('POST')
+    request(HttpMethod.POST)
   }
 
   def PUT() {
-    request('PUT')
+    request(HttpMethod.PUT)
   }
 
-  def request(String method) {
+  def DELETE() {
+    request(HttpMethod.DELETE)
+  }
+
+  def OPTIONS() {
+    request(HttpMethod.OPTIONS)
+  }
+
+  def HEAD() {
+    request(HttpMethod.HEAD)
+  }
+
+  def request(HttpMethod method) {
     log.debug("Requesting to ${path}")
     def request = client.request(method, path) { response ->
       if (sessionCookie && response.statusCode == 401) {
