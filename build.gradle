@@ -39,12 +39,13 @@ conf2ScopeMappings.addMapping(0, configurations.provided, Conf2ScopeMappingConta
 dependencies {
   // We use the latest groovy 2.x version for building this library
   provided 'org.codehaus.groovy:groovy-all:2.1.5'
-  provided "io.vertx:vertx-core:3.0.0-dev_preview1"
-  provided "io.vertx:vertx-lang-groovy:3.0.0-dev_preview1"
+  provided "io.vertx:vertx-core:3.0.0-milestone4"
+  provided "io.vertx:vertx-lang-groovy:3.0.0-milestone4"
   // We use the awesome Spock testing and specification framework
   testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
   testCompile 'cglib:cglib-nodep:3.1'
   testCompile 'org.objenesis:objenesis:2.1'
+  testCompile "io.vertx:vertx-unit:3.0.0-milestone4"
 }
 
 sourceSets {
