@@ -1,12 +1,11 @@
-package com.github.bangroot.vertx.mixins
+package com.github.bangroot.vertx.traits
 
-import org.vertx.groovy.platform.Verticle
+import io.vertx.lang.groovy.GroovyVerticle
 
 /**
  * Creator: bangroot
  */
-@Category(Verticle)
-class HttpMixin {
+trait HttpClientSupport {
 
   def http(String dest, @DelegatesTo(HttpCall) Closure closure) {
     def call = HttpCall.create(vertx, new URL(dest))
