@@ -1,6 +1,6 @@
 package com.github.bangroot.vertx.extensions
 
-import io.vertx.core.logging.impl.LoggerFactory
+import io.vertx.core.logging.LoggerFactory
 import io.vertx.groovy.core.Vertx
 import io.vertx.lang.groovy.GroovyVerticle
 
