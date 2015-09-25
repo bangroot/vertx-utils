@@ -4,6 +4,7 @@ import com.github.bangroot.vertx.BaseVertxSpecification
 
 class HttpClientSupportSpec extends BaseVertxSpecification {
 
+	/*
 	def "test basic call"() {
 		given:
 			
@@ -23,5 +24,5 @@ class HttpClientSupportSpec extends BaseVertxSpecification {
 					]
 				]
 			])
-	}
+	}*/
 }

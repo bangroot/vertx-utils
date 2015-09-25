@@ -8,7 +8,7 @@ class BaseVertxSpecification extends Specification {
 	@Shared TestSuite vertxSuite
 
 	def setup() {
-		vertxSuite = TestSuite.create(getCurrentName())
+		//vertxSuite = TestSuite.create(getCurrentName())
 	}
 
 	protected String getCurrentName() {
